@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.List;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Collections;
 
@@ -37,6 +37,7 @@ class IdChecker {
         return false;
 
     }
+
 }
 
 public class Main {
@@ -733,11 +734,11 @@ class Student extends Person {
 
 class Personnel {
 
-    List<Person> list;
+    private List<Person> list;
 
     public Personnel() {
 
-        list = new LinkedList<>();
+        list = new ArrayList<>();
 
     }
 
@@ -799,7 +800,6 @@ class Personnel {
                 writer.println("\t" + count + ". " + list.get(i).getFullName());
                 writer.println("\tID: " + list.get(i).getId());
                 writer.println("\t" + ((Faculty) list.get(i)).getRank() + ", " + ((Faculty) list.get(i)).getDepartment() + "\n");
-                list.remove(i);
                 count++;
 
             }
@@ -817,7 +817,6 @@ class Personnel {
                 writer.println("\t" + count + ". " + list.get(i).getFullName());
                 writer.println("\tID: " + list.get(i).getId());
                 writer.println("\t" + ((Staff) list.get(i)).getDepartment() + ", " + ((Staff) list.get(i)).getStatus() + "\n");
-                list.remove(i);
                 count++;
 
             }
@@ -828,29 +827,37 @@ class Personnel {
 
         writer.println("Students (Sorted by GPA)\n------------------------");
 
-        if (option.equals("1")) {
-
-            Collections.sort(list, new sortByGPA());
-
-        }
-
-        else if (option.equals("2")) {
-
-            Collections.sort(list, new sortByCreditHours());
-
-        }
+        List<Student> studentList = new ArrayList<>();
 
         for (int i = 0; i < list.size(); i++) {
 
             if (list.get(i) instanceof Student) {
 
-                writer.println("\t" + count + ". " + list.get(i).getFullName());
-                writer.println("\tID: " + list.get(i).getId());
-                writer.println("\tGPA: " + ((Student) list.get(i)).getGpa());
-                writer.println("\tCredit hours: " + ((Student) list.get(i)).getCreditHours() + "\n");
-                count++;
+                studentList.add((Student) list.get(i));
 
             }
+
+        }
+
+        if (option.equals("1")) {
+
+            Collections.sort(studentList, new sortByGPA());
+
+        }
+
+        else if (option.equals("2")) {
+
+            Collections.sort(studentList, new sortByCreditHours());
+
+        }
+
+        for (int i = 0; i < studentList.size(); i++) {
+
+            writer.println("\t" + count + ". " + studentList.get(i).getFullName());
+            writer.println("\tID: " + studentList.get(i).getId());
+            writer.println("\tGPA: " + studentList.get(i).getGpa());
+            writer.println("\tCredit hours: " + studentList.get(i).getCreditHours() + "\n");
+            count++;
 
         }
 

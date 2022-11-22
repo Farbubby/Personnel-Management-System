@@ -1,6 +1,39 @@
 import java.util.Scanner;
+import java.util.List;
+import java.util.ArrayList;
 
-public class main {
+class IdException extends Exception {
+
+    public IdException(String error) {
+
+        super(error);
+
+    }
+
+}
+
+class IdChecker {
+
+    public static boolean isValidId(String id) {
+
+        if (id.length() != 6) {
+
+            return false;
+
+        }
+
+        else if (Character.isLetter(id.charAt(0)) && Character.isLetter(id.charAt(1)) && Character.isDigit(id.charAt(2))
+                && Character.isDigit(id.charAt(3)) && Character.isDigit(id.charAt(4)) && Character.isDigit(id.charAt(5))) {
+
+            return true;
+
+        }
+
+        return false;
+
+    }
+}
+public class Main {
 
     public static void main(String[] args) {
 
@@ -18,7 +51,6 @@ public class main {
         int creditHours;
         Person people;
         Personnel list = new Personnel(numPeople);
-
 
         System.out.println("Choose one of the options:\n");
 
@@ -38,7 +70,7 @@ public class main {
             response = scan.nextLine();
             System.out.print("\n");
 
-            if (!(response.matches("1|2|3|4|5|6|7"))) {
+            if (!(response.matches("[1234567]"))) {
 
                 System.out.println("Invalid entry - Please try again\n");
                 continue;
@@ -50,19 +82,33 @@ public class main {
                 case "1":
 
                     System.out.println("Enter the faculty info:");
-
                     System.out.print("\tName of the faculty member: ");
                     fullName = scan.nextLine();
 
                     while (true) {
 
                         System.out.print("\tID: ");
-                        id = scan.nextLine();
-                        id = id.toLowerCase();
 
-                        if (list.searchID(id) != null) {
+                        try {
 
-                            System.out.println("\t\tID already exists");
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            else if (list.searchID(id) != null) {
+
+                                throw new IdException("\t\tInvalid ID: ID already exists");
+
+                            }
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
                             continue;
 
                         }
@@ -110,50 +156,113 @@ public class main {
                     System.out.println("\nFaculty member added!\n");
 
                     people = new Faculty(fullName, id, department, rank);
-                    list.addPerson(people, Faculty.getNumType() + Staff.getNumType() + Student.getNumType() - 1);
+                    list.addPerson(people);
                     break;
 
                 case "2":
 
                     System.out.println("Enter the student info:");
-
                     System.out.print("\tName of the student: ");
                     fullName = scan.nextLine();
 
                     while (true) {
 
                         System.out.print("\tID: ");
-                        id = scan.nextLine();
-                        id = id.toLowerCase();
 
-                        if (list.searchID(id) != null) {
+                        try {
 
-                            System.out.println("\t\tID already exists");
-                            continue;
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            else if (list.searchID(id) != null) {
+
+                                throw new IdException("\t\tInvalid ID: ID already exists");
+
+                            }
+
+                            break;
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
 
                         }
 
-                        break;
+                    }
+
+                    while (true) {
+
+                        System.out.print("\tGPA: ");
+
+                        try {
+
+                            gpa = Double.parseDouble(scan.nextLine());
+                            break;
+
+                        } catch (Exception error) {
+
+                            System.out.println("\t\tNot a double, try again!");
+
+                        }
 
                     }
 
-                    System.out.print("\tGPA: ");
-                    gpa = Double.parseDouble(scan.nextLine());
+                    while (true) {
 
-                    System.out.print("\tCredit hours: ");
-                    creditHours = Integer.parseInt(scan.nextLine());
+                        System.out.print("\tCredit hours: ");
+
+                        try {
+
+                            creditHours = Integer.parseInt(scan.nextLine());
+                            break;
+
+                        } catch (Exception error) {
+
+                            System.out.println("\t\tNot an integer, try again!");
+
+                        }
+
+                    }
 
                     System.out.println("\nStudent added!\n");
 
                     people = new Student(fullName, id, gpa, creditHours);
-                    list.addPerson(people, Faculty.getNumType() + Staff.getNumType() + Student.getNumType() - 1);
+                    list.addPerson(people);
                     break;
 
                 case "3":
 
-                    System.out.print("Enter the student's ID: ");
-                    id = scan.nextLine();
-                    id = id.toLowerCase();
+                    while (true) {
+
+                        System.out.print("\tEnter the student's ID: ");
+
+                        try {
+
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            break;
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
+
+                        }
+
+                    }
+
                     System.out.print("\n");
 
                     people = list.searchID(id);
@@ -170,9 +279,31 @@ public class main {
 
                 case "4":
 
-                    System.out.print("Enter the faculty's ID: ");
-                    id = scan.nextLine();
-                    id = id.toLowerCase();
+                    while (true) {
+
+                        System.out.print("\tEnter the faculty's ID: ");
+
+                        try {
+
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            break;
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
+
+                        }
+
+                    }
+
                     System.out.print("\n");
 
                     people = list.searchID(id);
@@ -190,19 +321,33 @@ public class main {
                 case "5":
 
                     System.out.println("Enter the staff info:");
-
                     System.out.print("\tName of the staff member: ");
                     fullName = scan.nextLine();
 
                     while (true) {
 
                         System.out.print("\tID: ");
-                        id = scan.nextLine();
-                        id = id.toLowerCase();
 
-                        if (list.searchID(id) != null) {
+                        try {
 
-                            System.out.println("\t\tID already exists");
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            else if (list.searchID(id) != null) {
+
+                                throw new IdException("\t\tInvalid ID: ID already exists");
+
+                            }
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
                             continue;
 
                         }
@@ -260,14 +405,36 @@ public class main {
                     System.out.println("\nStaff member added!\n");
 
                     people = new Staff(fullName, id, department, status);
-                    list.addPerson(people, Faculty.getNumType() + Staff.getNumType() + Student.getNumType() - 1);
+                    list.addPerson(people);
                     break;
 
                 case "6":
 
-                    System.out.print("Enter the staff's ID: ");
-                    id = scan.nextLine();
-                    id = id.toLowerCase();
+                    while (true) {
+
+                        System.out.print("\tEnter the staff's ID: ");
+
+                        try {
+
+                            id = scan.nextLine();
+                            id = id.toLowerCase();
+
+                            if (!IdChecker.isValidId(id)) {
+
+                                throw new IdException("\t\tInvalid ID format: Must be LetterLetterDigitDigitDigitDigit");
+
+                            }
+
+                            break;
+
+                        } catch (IdException error) {
+
+                            System.out.println(error.getMessage());
+
+                        }
+
+                    }
+
                     System.out.print("\n");
 
                     people = list.searchID(id);
@@ -377,13 +544,11 @@ abstract class Employee extends Person {
 class Faculty extends Employee {
 
     String rank;
-    private static int numType = 0;
 
     public Faculty(String fullName, String id, String department, String rank) {
 
         super(fullName, id, department);
         this.rank = rank;
-        numType++;
 
     }
 
@@ -403,12 +568,6 @@ class Faculty extends Employee {
 
     }
 
-    public static int getNumType() {
-
-        return numType;
-
-    }
-
     @Override
     public void print() {
 
@@ -423,13 +582,11 @@ class Faculty extends Employee {
 class Staff extends Employee {
 
     String status;
-    private static int numType = 0;
 
     public Staff(String fullName, String id, String department, String status) {
 
         super(fullName, id, department);
         this.status = status;
-        numType++;
 
     }
 
@@ -449,12 +606,6 @@ class Staff extends Employee {
 
     }
 
-    public static int getNumType() {
-
-        return numType;
-
-    }
-
     @Override
     public void print() {
 
@@ -471,14 +622,12 @@ class Student extends Person {
     double gpa;
     int creditHours;
     double discount = 0;
-    private static int numType = 0;
 
     public Student(String fullName, String id, double gpa, int creditHours) {
 
         super(fullName, id);
         this.gpa = gpa;
         this.creditHours = creditHours;
-        numType++;
 
     }
 
@@ -520,12 +669,6 @@ class Student extends Person {
 
     }
 
-    public static int getNumType() {
-
-        return numType;
-
-    }
-
     @Override
     public void print() {
 
@@ -542,11 +685,11 @@ class Student extends Person {
 
 class Personnel {
 
-    Person[] list;
+    List<Person> list;
 
     public Personnel(int size) {
 
-        list = new Person[size];
+        list = new ArrayList<>();
 
     }
 
@@ -554,25 +697,25 @@ class Personnel {
 
     }
 
-    public void addPerson(Person people, int index) {
+    public void addPerson(Person people) {
 
-        list[index] = people;
+        list.add(people);
 
     }
 
     public Person getPerson(int index) {
 
-        return list[index];
+        return list.get(index);
 
     }
 
     public Person searchID(String id) {
 
-        for (int i = 0; i < Student.getNumType() + Staff.getNumType() + Faculty.getNumType(); i++) {
+        for (int i = 0; i < list.size(); i++) {
 
-            if (list[i].getId().equals(id)) {
+            if (list.get(i).getId().equals(id)) {
 
-                return list[i];
+                return list.get(i);
 
             }
 

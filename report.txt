@@ -1,0 +1,24 @@
+Faculty Members
+---------------
+	1. Joe
+	ID: jo3456
+	Professor, Mathematics
+
+Staff Members
+-------------
+	1. Jonathan
+	ID: jo1234
+	Sciences, Full Time
+
+Students (Sorted by GPA)
+------------------------
+	1. Connor
+	ID: dr4564
+	GPA: 4.6
+	Credit hours: 4
+
+	2. David
+	ID: da4512
+	GPA: 3.4
+	Credit hours: 2
+

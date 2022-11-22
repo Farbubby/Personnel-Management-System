@@ -1,6 +1,11 @@
+import java.io.IOException;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Comparator;
+import java.util.Collections;
 
 class IdException extends Exception {
 
@@ -33,6 +38,7 @@ class IdChecker {
 
     }
 }
+
 public class Main {
 
     public static void main(String[] args) {
@@ -47,10 +53,10 @@ public class Main {
         String department;
         String rank;
         String status;
+        Person people;
         double gpa;
         int creditHours;
-        Person people;
-        Personnel list = new Personnel(numPeople);
+        Personnel list = new Personnel();
 
         System.out.println("Choose one of the options:\n");
 
@@ -451,7 +457,49 @@ public class Main {
 
                 case "7":
 
-                    System.out.println("Goodbye!");
+                    String response1;
+
+                    while(true) {
+
+                        System.out.print("Would you like to create the report? (Y/N): ");
+                        response1 = scan.nextLine();
+
+                        if (!(response1.equalsIgnoreCase("y") || response1.equalsIgnoreCase("n"))) {
+
+                            System.out.println("\tNot valid response, please try again!");
+                            continue;
+
+                        }
+
+                        break;
+
+                    }
+
+                    if (response1.equalsIgnoreCase("y")) {
+
+                        while (true) {
+
+                            System.out.print("Would you like to sort your students by (1) GPA or (2) credit hours: ");
+                            response1 = scan.nextLine();
+
+                            if (!(response1.equalsIgnoreCase("1") || response1.equalsIgnoreCase("2"))) {
+
+                                System.out.println("\tNot valid response, please try again!");
+                                continue;
+
+                            }
+
+                            break;
+
+                        }
+
+                        System.out.println("\nReport created and saved on your hard drive!");
+                        list.printPersonnel(response1);
+
+                    }
+
+                    System.out.println("\nGoodbye!");
+
                     break;
 
             }
@@ -687,13 +735,13 @@ class Personnel {
 
     List<Person> list;
 
-    public Personnel(int size) {
+    public Personnel() {
 
-        list = new ArrayList<>();
+        list = new LinkedList<>();
 
     }
 
-    public Personnel() {
+    public Personnel(int size) {
 
     }
 
@@ -722,6 +770,125 @@ class Personnel {
         }
 
         return null;
+
+    }
+
+    public void printPersonnel(String option) {
+
+        PrintWriter writer = null;
+
+        try {
+
+            File output = new File("report.txt");
+            writer = new PrintWriter(output);
+
+        } catch (IOException error) {
+
+            System.out.println(error.getMessage());
+
+        }
+
+        int count = 1;
+
+        writer.println("Faculty Members\n---------------");
+
+        for (int i = 0; i < list.size(); i++) {
+
+            if (list.get(i) instanceof Faculty) {
+
+                writer.println("\t" + count + ". " + list.get(i).getFullName());
+                writer.println("\tID: " + list.get(i).getId());
+                writer.println("\t" + ((Faculty) list.get(i)).getRank() + ", " + ((Faculty) list.get(i)).getDepartment() + "\n");
+                list.remove(i);
+                count++;
+
+            }
+
+        }
+
+        count = 1;
+
+        writer.println("Staff Members\n-------------");
+
+        for (int i = 0; i < list.size(); i++) {
+
+            if (list.get(i) instanceof Staff) {
+
+                writer.println("\t" + count + ". " + list.get(i).getFullName());
+                writer.println("\tID: " + list.get(i).getId());
+                writer.println("\t" + ((Staff) list.get(i)).getDepartment() + ", " + ((Staff) list.get(i)).getStatus() + "\n");
+                list.remove(i);
+                count++;
+
+            }
+
+        }
+
+        count = 1;
+
+        writer.println("Students (Sorted by GPA)\n------------------------");
+
+        if (option.equals("1")) {
+
+            Collections.sort(list, new sortByGPA());
+
+        }
+
+        else if (option.equals("2")) {
+
+            Collections.sort(list, new sortByCreditHours());
+
+        }
+
+        for (int i = 0; i < list.size(); i++) {
+
+            if (list.get(i) instanceof Student) {
+
+                writer.println("\t" + count + ". " + list.get(i).getFullName());
+                writer.println("\tID: " + list.get(i).getId());
+                writer.println("\tGPA: " + ((Student) list.get(i)).getGpa());
+                writer.println("\tCredit hours: " + ((Student) list.get(i)).getCreditHours() + "\n");
+                count++;
+
+            }
+
+        }
+
+        writer.close();
+
+    }
+
+}
+
+class sortByGPA implements Comparator<Person> {
+
+    @Override
+    public int compare(Person o1, Person o2) {
+
+        if (((Student)o1).getGpa() < ((Student)o2).getGpa()) {
+
+            return 1;
+
+        }
+
+        return -1;
+
+    }
+
+}
+
+class sortByCreditHours implements Comparator<Person> {
+
+    @Override
+    public int compare(Person o1, Person o2) {
+
+        if (((Student)o1).getCreditHours() < ((Student)o2).getCreditHours()) {
+
+            return 1;
+
+        }
+
+        return -1;
 
     }
 
